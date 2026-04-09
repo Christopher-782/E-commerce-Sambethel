@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sambethel | Premium Provisions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              premiumGreen: "#064e3b",
+              premiumGold: "#d97706",
+              softWhite: "#fcfcfc",
+            },
+            fontFamily: {
+              serif: ['"Playfair Display"', "serif"],
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .view-section {
+        display: none;
+      }
+      .view-section.active {
+        display: block;
+      }
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+        }
+        to {
+          transform: translateX(0);
+        }
+      }
+      .animate-slide-in {
+        animation: slideIn 0.3s ease-out;
+      }
+
+      /* Hide scrollbar for filter chips on mobile */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+  <body class="bg-softWhite text-gray-900 font-sans">
+    <!-- Navbar -->
+    <nav class="glass-nav sticky top-0 z-50 border-b border-gray-100">
+      <div
+        class="container mx-auto px-4 sm:px-8 py-4 flex justify-between items-center"
+      >
+        <h1
+          onclick="showView('home')"
+          class="text-2xl sm:text-3xl font-serif font-bold text-premiumGreen cursor-pointer tracking-tight"
+        >
+          Sambethel
+        </h1>
+        <div class="flex items-center gap-4 sm:gap-8">
+          <button
+            onclick="showView('home')"
+            class="text-xs sm:text-sm font-medium uppercase tracking-widest text-gray-600 hover:text-premiumGreen"
+          >
+            Home
+          </button>
+          <button onclick="toggleCart()" class="relative group">
+            <i
+              class="fa-solid fa-bag-shopping text-xl sm:text-2xl text-gray-800 group-hover:text-premiumGreen transition-colors"
+            ></i>
+            <span
+              id="cart-count"
+              class="absolute -top-2 -right-2 bg-premiumGold text-white text-[10px] rounded-full h-5 w-5 flex items-center justify-center"
+              >0</span
+            >
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- VIEW 1: HOME -->
+    <section id="view-home" class="view-section active">
+      <div
+        class="relative h-[50vh] sm:h-[60vh] flex items-center justify-center bg-premiumGreen overflow-hidden"
+      >
+        <img
+          src="https://res.cloudinary.com/deoqw88yb/image/upload/v1774427265/Copilot_20260217_150736_1_qhxfqv_uuajdy.avif"
+          class="absolute inset-0 w-full h-full object-cover opacity-40"
+        />
+        <div class="relative z-10 text-center text-white px-4">
+          <h2 class="text-3xl sm:text-5xl md:text-7xl font-serif mb-4">
+            The Sambethel Experience
+          </h2>
+          <p
+            class="text-sm sm:text-lg md:text-xl font-light tracking-widest uppercase"
+          >
+            Choose your journey
+          </p>
+        </div>
+      </div>
+
+      <div class="container mx-auto px-4 sm:px-8 py-12 sm:py-20">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12 max-w-5xl mx-auto"
+        >
+          <!-- Taste Card -->
+          <div
+            onclick="showView('taste')"
+            class="group cursor-pointer relative h-[350px] sm:h-[500px] rounded-3xl overflow-hidden shadow-2xl"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80"
+              class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
+            ></div>
+            <div class="absolute bottom-10 left-10 text-white">
+              <h3 class="text-2xl sm:text-4xl font-serif mb-2">
+                Taste Products
+              </h3>
+              <p
+                class="text-xs sm:text-sm tracking-widest uppercase text-gray-300"
+              >
+                Pastries, Juice & Delicacies
+              </p>
+              <span
+                class="mt-4 inline-block text-premiumGold font-bold border-b border-premiumGold text-sm"
+                >Explore Now</span
+              >
+            </div>
+          </div>
+          <!-- Supermarket Card -->
+          <div
+            onclick="showView('supermarket')"
+            class="group cursor-pointer relative h-[350px] sm:h-[500px] rounded-3xl overflow-hidden shadow-2xl"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1534723452862-4c874018d66d?auto=format&fit=crop&w=800&q=80"
+              class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
+            ></div>
+            <div class="absolute bottom-10 left-10 text-white">
+              <h3 class="text-2xl sm:text-4xl font-serif mb-2">Supermarket</h3>
+              <p
+                class="text-xs sm:text-sm tracking-widest uppercase text-gray-300"
+              >
+                Daily Essentials & Groceries
+              </p>
+              <span
+                class="mt-4 inline-block text-premiumGold font-bold border-b border-premiumGold"
+                >Coming Soon</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: TASTE PRODUCTS -->
+    <section id="view-taste" class="view-section">
+      <div class="container mx-auto px-4 sm:px-8 py-12 sm:py-16">
+        <button
+          onclick="showView('home')"
+          class="mb-8 text-premiumGreen font-bold flex items-center gap-2 hover:gap-4 transition-all"
+        >
+          <i class="fas fa-arrow-left"></i> Back to Selection
+        </button>
+        <h2 class="text-3xl sm:text-5xl font-serif text-premiumGreen mb-4">
+          Taste Collection
+        </h2>
+        <p class="text-gray-500 mb-6 tracking-widest uppercase text-sm">
+          Freshly prepared delicacies
+        </p>
+
+        <!-- FILTER CHIPS -->
+        <div
+          id="taste-filters"
+          class="flex gap-3 overflow-x-auto pb-4 no-scrollbar mb-10"
+        >
+          <!-- JS Injected -->
+        </div>
+
+        <div
+          id="taste-grid"
+          class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10"
+        ></div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: SUPERMARKET -->
+    <section id="view-supermarket" class="view-section">
+      <div class="container mx-auto px-4 sm:px-8 py-12 sm:py-16">
+        <button
+          onclick="showView('home')"
+          class="mb-8 text-premiumGreen font-bold flex items-center gap-2 hover:gap-4 transition-all"
+        >
+          <i class="fas fa-arrow-left"></i> Back to Selection
+        </button>
+        <h2 class="text-3xl sm:text-5xl font-serif text-premiumGreen mb-4">
+          Supermarket
+        </h2>
+        <p class="text-gray-500 mb-6 tracking-widest uppercase text-sm">
+          Daily essentials & groceries
+        </p>
+
+        <!-- FILTER CHIPS -->
+        <div
+          id="supermarket-filters"
+          class="flex gap-3 overflow-x-auto pb-4 no-scrollbar mb-10"
+        >
+          <!-- JS Injected -->
+        </div>
+
+        <div
+          id="supermarket-grid"
+          class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10"
+        >
+          <!-- JS Injected -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="fixed inset-0 z-[100] hidden">
+      <div
+        class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onclick="toggleCart()"
+      ></div>
+      <div
+        class="absolute right-0 top-0 h-full w-full sm:w-[450px] bg-white shadow-2xl p-6 sm:p-8 flex flex-col animate-slide-in"
+      >
+        <div class="flex justify-between items-center mb-10">
+          <h3 class="text-2xl font-serif text-premiumGreen">Your Bag</h3>
+          <button onclick="toggleCart()" class="text-gray-400 hover:text-black">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto space-y-6"></div>
+        <div class="border-t border-gray-100 pt-6 mt-6">
+          <div class="flex justify-between text-xl font-bold mb-4">
+            <span>Total:</span>
+            <span id="cart-total" class="text-premiumGreen">₦0</span>
+          </div>
+          <button
+            onclick="checkoutWhatsApp()"
+            class="w-full bg-premiumGreen text-white py-4 rounded-full font-bold uppercase tracking-widest hover:bg-black transition-all shadow-lg"
+          >
+            Order via WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
