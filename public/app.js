@@ -6,7 +6,8 @@
 // 1. Configuration & State
 let cart = [];
 let allProducts = []; // Master list to allow instant filtering without re-fetching
-const API_URL = "http://localhost:5000/api/products";
+const API_URL =
+  "https://e-commerce-sambethel-production.up.railway.app/api/products";
 const WHATSAPP_NUMBER = "2348078777465"; // Ensure this is correct
 
 // 2. View Management (Single Page Application Logic)
