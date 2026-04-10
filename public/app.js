@@ -1,14 +1,22 @@
-let cart = [];
-let allProducts = []; // Master list to allow filtering
-const API_URL = "http://localhost:5000/api/products";
-const WHATSAPP_NUMBER = "2348072011614";
+/**
+ * SAMBETHEL - PREMIUM PROVISIONS
+ * Full Application Logic
+ */
 
-// 1. View Management
+// 1. Configuration & State
+let cart = [];
+let allProducts = []; // Master list to allow instant filtering without re-fetching
+const API_URL = "http://localhost:5000/api/products";
+const WHATSAPP_NUMBER = "2348078777465"; // Ensure this is correct
+
+// 2. View Management (Single Page Application Logic)
 function showView(viewId) {
+  // Hide all view sections
   document.querySelectorAll(".view-section").forEach((section) => {
     section.classList.remove("active");
   });
 
+  // Show the requested section
   const target = document.getElementById(`view-${viewId}`);
   if (target) {
     target.classList.add("active");
@@ -16,7 +24,7 @@ function showView(viewId) {
   }
 }
 
-// 2. Currency Formatter
+// 3. Currency Formatter (Naira)
 function formatNaira(amount) {
   return new Intl.NumberFormat("en-NG", {
     style: "currency",
@@ -25,23 +33,32 @@ function formatNaira(amount) {
   }).format(amount);
 }
 
-// 3. Fetching & Rendering
+// 4. Data Fetching & Setup
 async function fetchProducts() {
   try {
     const res = await fetch(API_URL);
-    if (!res.ok) throw new Error("Failed to fetch products");
+    if (!res.ok) throw new Error("Failed to fetch products from server");
+
     allProducts = await res.json();
 
-    // Initialize the views
+    console.log("--- DATABASE INSPECTION ---");
+    console.log("Total items received:", allProducts.length);
+    if (allProducts.length > 0) {
+      console.log("First product sample:", allProducts[0]);
+    }
+    console.log("---------------------------");
+
+    // Once data is loaded, setup the UI
     setupViews();
   } catch (err) {
     console.error("Error fetching products:", err);
+    // Optional: Show a toast error to the user here
   }
 }
 
-// This function sets up the initial state of the pages
+// This function organizes products into their respective categories and builds filters
 function setupViews() {
-  // 1. Separate products into their main groups
+  // Split products into main groups
   const tasteProducts = allProducts.filter(
     (p) =>
       (p.mainCategory || p.category || "").toLowerCase().trim() === "taste",
@@ -52,21 +69,21 @@ function setupViews() {
       "supermarket",
   );
 
-  // 2. Render the initial grids
+  // Render the initial product grids
   renderGrid(tasteProducts, "taste-grid");
   renderGrid(superProducts, "supermarket-grid");
 
-  // 3. Create the Filter Buttons
+  // Generate the clickable Filter Chips (Sub-categories)
   createFilters(tasteProducts, "taste-filters", "taste");
   createFilters(superProducts, "supermarket-filters", "supermarket");
 }
 
-// Creates the clickable "Chips"
+// 5. Filter Logic
 function createFilters(products, containerId, mainType) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  // Get unique subcategories
+  // Get unique subcategories from the product list
   const subCategories = [
     "All",
     ...new Set(products.map((p) => p.subCategory).filter(Boolean)),
@@ -90,13 +107,12 @@ function createFilters(products, containerId, mainType) {
     .classList.add("bg-premiumGreen", "text-white", "border-premiumGreen");
 }
 
-// The actual filtering engine
 function filterBySubCategory(mainType, subCategory) {
   const gridId = mainType === "taste" ? "taste-grid" : "supermarket-grid";
   const filterContainer =
     mainType === "taste" ? "taste-filters" : "supermarket-filters";
 
-  // 1. Filter the data
+  // 1. Filter the master list
   const filtered = allProducts.filter((p) => {
     const matchesMain =
       (p.mainCategory || p.category || "").toLowerCase().trim() === mainType;
@@ -104,10 +120,10 @@ function filterBySubCategory(mainType, subCategory) {
     return matchesMain && matchesSub;
   });
 
-  // 2. Update the Grid
+  // 2. Re-render the grid
   renderGrid(filtered, gridId);
 
-  // 3. Update Button Styles (Active State)
+  // 3. Update button styles (Active/Inactive)
   const buttons = document
     .getElementById(filterContainer)
     .querySelectorAll("button");
@@ -126,7 +142,7 @@ function filterBySubCategory(mainType, subCategory) {
   });
 }
 
-// Core rendering function
+// 6. Product Rendering
 function renderGrid(products, gridId) {
   const grid = document.getElementById(gridId);
   if (!grid) return;
@@ -143,7 +159,9 @@ function renderGrid(products, gridId) {
 }
 
 function createProductCard(product) {
+  // Sanitization: Handles names with single quotes (e.s. "Baker's Cake")
   const safeName = product.name.replace(/'/g, "\\'");
+
   return `
     <div class="group">
         <div class="relative overflow-hidden rounded-2xl bg-gray-100 aspect-square mb-4">
@@ -162,9 +180,87 @@ function createProductCard(product) {
   `;
 }
 
-// ... (Rest of your Cart functions: addToCart, updateCartUI, changeQty, toggleCart, checkoutWhatsApp) ...
+// 7. Cart Operations
+function addToCart(id, name, price) {
+  const existing = cart.find((item) => item.id === id);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ id, name, price, qty: 1 });
+  }
+  updateCartUI();
+}
 
-// 5. Initialization
+function updateCartUI() {
+  const cartContainer = document.getElementById("cart-items");
+  const cartCount = document.getElementById("cart-count");
+  const cartTotal = document.getElementById("cart-total");
+
+  if (!cartContainer) return;
+
+  // Update badge count
+  cartCount.innerText = cart.reduce((acc, item) => acc + item.qty, 0);
+
+  // Update list of items
+  cartContainer.innerHTML = cart
+    .map(
+      (item) => `
+        <div class="flex justify-between items-center border-b border-gray-50 pb-4">
+            <div class="flex-1">
+                <h4 class="font-bold text-sm text-gray-800">${item.name}</h4>
+                <p class="text-xs text-gray-500">${item.qty} x ${formatNaira(item.price)}</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="changeQty('${item.id}', -1)" class="text-gray-400 hover:text-black"><i class="fas fa-minus-circle"></i></button>
+                <span class="text-sm font-bold">${item.qty}</span>
+                <button onclick="changeQty('${item.id}', 1)" class="text-gray-400 hover:text-black"><i class="fas fa-plus-circle"></i></button>
+            </div>
+        </div>
+    `,
+    )
+    .join("");
+
+  // Update grand total
+  const total = cart.reduce((acc, item) => acc + item.qty * item.price, 0);
+  cartTotal.innerText = formatNaira(total);
+}
+
+function changeQty(id, delta) {
+  const item = cart.find((i) => i.id === id);
+  if (item) {
+    item.qty += delta;
+    if (item.qty <= 0) {
+      cart = cart.filter((i) => i.id !== id);
+    }
+  }
+  updateCartUI();
+}
+
+function toggleCart() {
+  document.getElementById("cart-modal").classList.toggle("hidden");
+}
+
+function checkoutWhatsApp() {
+  if (cart.length === 0) {
+    alert("Your bag is empty!");
+    return;
+  }
+
+  let msg = "✨ *New Order from Sambethel* ✨\n\n";
+  let total = 0;
+
+  cart.forEach((item) => {
+    msg += `▪️ ${item.name} (${item.qty} x ${formatNaira(item.price)})\n`;
+    total += item.qty * item.price;
+  });
+
+  msg += `\n💰 *Total: ${formatNaira(total)}*`;
+
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  window.open(url, "_blank");
+}
+
+// 8. Initialization
 document.addEventListener("DOMContentLoaded", () => {
   fetchProducts();
 });

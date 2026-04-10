@@ -33,4 +33,6 @@ app.get("/api/products", async (req, res) => {
   }
 });
 
-app.listen(5000, () => console.log("Sambethel Server running on port 5000"));
+app.listen(process.env.PORT, () =>
+  console.log("Sambethel Server running on ${PORT}"),
+);
