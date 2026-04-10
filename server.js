@@ -1,4 +1,3 @@
-// backend/server.js
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -7,7 +6,28 @@ const Product = require("./models/products");
 require("dotenv").config();
 
 const app = express();
-app.use(cors());
+
+// ✅ CORS must be BEFORE other middleware
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Accept",
+      "Origin",
+      "X-Requested-With",
+    ],
+    credentials: false,
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  }),
+);
+
+// Handle preflight for all routes
+app.options("*", cors());
+
 app.use(express.json());
 app.use(express.static("public"));
 
@@ -33,6 +53,5 @@ app.get("/api/products", async (req, res) => {
   }
 });
 
-app.listen(process.env.PORT, () =>
-  console.log("Sambethel Server running on ${PORT}"),
-);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Sambethel Server running on ${PORT}`));
