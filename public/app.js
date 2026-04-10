@@ -46,7 +46,7 @@ async function fetchProducts() {
     if (allProducts.length > 0) {
       console.log("First product sample:", allProducts[0]);
     }
-    console.log("---------------------------");
+    console.log("pass");
 
     // Once data is loaded, setup the UI
     setupViews();
